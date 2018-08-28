@@ -2,10 +2,15 @@ package com.sundy.rocketmq.common.namesrv;
 
 import java.io.File;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import com.sundy.rocketmq.common.constants.LoggerName;
 import com.sundy.rocketmq.logging.InternalLogger;
 import com.sundy.rocketmq.logging.InternalLoggerFactory;
 
+@Getter
+@Setter
 public class NamesrvConfig {
 
 	private static final InternalLogger log = InternalLoggerFactory.getLogger(LoggerName.NAMESRV_LOGGER_NAME);
@@ -17,52 +22,5 @@ public class NamesrvConfig {
     private boolean clusterTest = false;
     private boolean orderMessageEnable = false;
     
-    public boolean isOrderMessageEnable() {
-        return orderMessageEnable;
-    }
-
-    public void setOrderMessageEnable(boolean orderMessageEnable) {
-        this.orderMessageEnable = orderMessageEnable;
-    }
-
-    public String getRocketmqHome() {
-        return rocketmqHome;
-    }
-
-    public void setRocketmqHome(String rocketmqHome) {
-        this.rocketmqHome = rocketmqHome;
-    }
-
-    public String getKvConfigPath() {
-        return kvConfigPath;
-    }
-
-    public void setKvConfigPath(String kvConfigPath) {
-        this.kvConfigPath = kvConfigPath;
-    }
-
-    public String getProductEnvName() {
-        return productEnvName;
-    }
-
-    public void setProductEnvName(String productEnvName) {
-        this.productEnvName = productEnvName;
-    }
-
-    public boolean isClusterTest() {
-        return clusterTest;
-    }
-
-    public void setClusterTest(boolean clusterTest) {
-        this.clusterTest = clusterTest;
-    }
-
-    public String getConfigStorePath() {
-        return configStorePath;
-    }
-
-    public void setConfigStorePath(final String configStorePath) {
-        this.configStorePath = configStorePath;
-    }
 	
 }
