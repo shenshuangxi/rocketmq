@@ -2,14 +2,18 @@ package com.sundy.rocketmq.remoting.protocol;
 
 public enum SerializeType {
 
-	JSON((byte) 0), ROCKETMQ((byte) 1);
+	JSON((byte)0), ROCKETMQ((byte)1);
+	
+	private final byte code;
 
-	private byte code;
-
-	SerializeType(byte code) {
+	private SerializeType(byte code) {
 		this.code = code;
 	}
 
+	public byte getCode() {
+		return code;
+	}
+	
 	public static SerializeType valueOf(byte code) {
 		for (SerializeType serializeType : SerializeType.values()) {
 			if (serializeType.getCode() == code) {
@@ -18,9 +22,7 @@ public enum SerializeType {
 		}
 		return null;
 	}
-
-	public byte getCode() {
-		return code;
-	}
-
+	
+	
+	
 }
