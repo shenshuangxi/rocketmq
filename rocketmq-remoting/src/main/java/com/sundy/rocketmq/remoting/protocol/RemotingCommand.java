@@ -1,6 +1,5 @@
 package com.sundy.rocketmq.remoting.protocol;
 
-import java.awt.color.CMMException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -98,14 +97,14 @@ public class RemotingCommand {
 	
     
 	public static RemotingCommand createResponseCommand(Class<? extends CommandCustomHeader> CommandHeaderClass) {
-		return createReponseCommand(RemotingSysResponsedCode.SYSTEM_ERROR, "not set any response code", CommandHeaderClass);
+		return createResponseCommand(RemotingSysResponseCode.SYSTEM_ERROR, "not set any response code", CommandHeaderClass);
 	}
 	
-	public static RemotingCommand createReponseCommand(int code, String remark) {
-		return createReponseCommand(code, remark, null);
+	public static RemotingCommand createResponseCommand(int code, String remark) {
+		return createResponseCommand(code, remark, null);
 	}
 
-	private static RemotingCommand createReponseCommand(int code, String remark, Class<? extends CommandCustomHeader> commandHeaderClass) {
+	private static RemotingCommand createResponseCommand(int code, String remark, Class<? extends CommandCustomHeader> commandHeaderClass) {
 		RemotingCommand remotingCommand = new RemotingCommand();
 		remotingCommand.code = code;
 		remotingCommand.remark = remark;
@@ -275,6 +274,115 @@ public class RemotingCommand {
 		}
 		return fields;
 	}
+	
+	public ByteBuffer encode() {
+		int length = 4;
+		byte[] headerData = this.headerEncode();
+		length += headerData.length;
+		if (this.body != null) {
+			length += this.body.length;
+		}
+		ByteBuffer resutl = ByteBuffer.allocate(4+length);
+		resutl.putInt(length);
+		resutl.put(markProtocolType(headerData.length, serializeTypeCurrentRPC));
+		resutl.put(headerData);
+		if (this.body != null) {
+			resutl.put(this.body);
+		}
+		resutl.flip();
+		return resutl;
+	}
+
+
+
+	private byte[] headerEncode() {
+		this.makeCustomHeaderToNet();
+		if (SerializeType.ROCKETMQ == serializeTypeCurrentRPC) {
+			return RocketMQSerializable.rocketMQProtocolEncode(this);
+		} else {
+			return RemotingSerializable.encode(this);
+		}
+	}
+
+	public void makeCustomHeaderToNet() {
+		if (this.customHeader != null) {
+			Field[] fields = getClassFields(this.customHeader.getClass());
+			if (this.extFields == null) {
+				this.extFields = new HashMap<String, String>();
+			}
+			for (Field field : fields) {
+				if (!Modifier.isStatic(field.getModifiers())) {
+					String fieldName = field.getName();
+					if (!fieldName.startsWith("this")) {
+						Object value = null;
+						try {
+							field.setAccessible(true);
+							value = field.get(this.customHeader);
+						} catch (Exception e) {
+						}
+						if (value != null) {
+							this.extFields.put(fieldName, value.toString());
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	public ByteBuffer encodeHeader() {
+		return encodeHeader(this.body != null ? this.body.length : 0);
+	}
+
+	public ByteBuffer encodeHeader(int bodyLength) {
+		int length = 4;
+		byte[] headerData = this.headerEncode();
+		length += headerData.length;
+		if (this.body != null) {
+			length += this.body.length;
+		}
+		ByteBuffer resutl = ByteBuffer.allocate(4+length-bodyLength);
+		resutl.putInt(length);
+		resutl.put(markProtocolType(headerData.length, serializeTypeCurrentRPC));
+		resutl.put(headerData);
+		resutl.flip();
+		return resutl;
+	}
+	
+	public void markOnewayRPC() {
+		int bits = 1 << RPC_ONEWAY;
+		this.flag |= bits;
+	}
+	
+	public boolean isOnewayRPC() {
+		int bits = 1 << RPC_ONEWAY;
+		return (this.flag & bits) == bits;
+	}
+	
+	public RemotingCommandType getType() {
+		if (this.isResponseType()) {
+			return RemotingCommandType.RESPONSE_COMMAND;
+		}
+		return RemotingCommandType.REQUEST_COMMAND;
+	}
+	
+	public boolean isResponseType() {
+		int bits = 1 << RPC_TYPE;
+		return (this.flag & bits) == bits;
+	}
+	
+	public void addExtField(String key, String value) {
+        if (null == extFields) {
+            extFields = new HashMap<String, String>();
+        }
+        extFields.put(key, value);
+    }
+
+    @Override
+    public String toString() {
+        return "RemotingCommand [code=" + code + ", language=" + language + ", version=" + version + ", opaque=" + opaque + ", flag(B)="
+            + Integer.toBinaryString(flag) + ", remark=" + remark + ", extFields=" + extFields + ", serializeTypeCurrentRPC="
+            + serializeTypeCurrentRPC + "]";
+    }
 	
 	
 	

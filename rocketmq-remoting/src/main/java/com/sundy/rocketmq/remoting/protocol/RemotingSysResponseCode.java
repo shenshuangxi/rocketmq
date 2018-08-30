@@ -1,6 +1,6 @@
 package com.sundy.rocketmq.remoting.protocol;
 
-public interface RemotingSysResponsedCode {
+public interface RemotingSysResponseCode {
 
 	int SUCCESS = 0;
 	int SYSTEM_ERROR = 1;

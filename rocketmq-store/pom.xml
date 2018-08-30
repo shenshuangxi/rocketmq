@@ -8,33 +8,22 @@
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>rocketmq-remoting</artifactId>
-
-	<name>rocketmq-remoting</name>
+	<artifactId>rocketmq-store</artifactId>
+	
+	<name>rocketmq-store</name>
 	<!-- FIXME change it to the project's website -->
 	<url>http://www.example.com</url>
 
+
 	<dependencies>
 		<dependency>
-			<groupId>com.sundy</groupId>
-			<artifactId>rocketmq-logging</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>io.netty</groupId>
-			<artifactId>netty-all</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.alibaba</groupId>
-			<artifactId>fastjson</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
+			<artifactId>guava</artifactId>
 		</dependency>
 		<dependency>
-		    <groupId>org.projectlombok</groupId>
-		    <artifactId>lombok</artifactId>
-		    <scope>provided</scope>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
