@@ -15,6 +15,7 @@ import com.sundy.rocketmq.common.namesrv.NamesrvConfig;
 import com.sundy.rocketmq.logging.InternalLogger;
 import com.sundy.rocketmq.logging.InternalLoggerFactory;
 import com.sundy.rocketmq.namesrv.kvconfig.KVConfigManager;
+import com.sundy.rocketmq.namesrv.processor.ClusterTestRequestProcessor;
 import com.sundy.rocketmq.namesrv.processor.DefaultRequestProcessor;
 import com.sundy.rocketmq.namesrv.routeinfo.BrokerHousekeepingService;
 import com.sundy.rocketmq.namesrv.routeinfo.RouteInfoManager;
